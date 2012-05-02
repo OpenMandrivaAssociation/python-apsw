@@ -1,6 +1,12 @@
-%define sqlite_version 3.7.10
+%define sqlite_version 3.7.11
 %define uprel 1
 %define pkg_version %{sqlite_version}-r%{uprel}
+
+%if %_use_internal_dependency_generator
+%define __noautoprov 'apsw.so'
+%else
+%define __noautoprov apsw.so
+%endif
 
 Name:           python-apsw
 Version:        %{sqlite_version}.r%{uprel}
