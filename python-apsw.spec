@@ -1,4 +1,4 @@
-%define sqlite_version 3.7.11
+%define sqlite_version 3.7.13
 %define uprel 1
 %define pkg_version %{sqlite_version}-r%{uprel}
 
@@ -12,7 +12,7 @@ Name:           python-apsw
 Version:        %{sqlite_version}.r%{uprel}
 Release:        1
 Summary:        Another Python SQLite Wrapper
-Source0:        http://apsw.googlecode.com/files/apsw-%{pkg_version}.zip
+Source0:        http://apsw.googlecode.com/files/apsw-3.7.13-r1.zip
 URL:            http://code.google.com/p/apsw/
 Group:          Development/Python
 License:        zlib/libpng License
