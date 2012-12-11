@@ -56,3 +56,22 @@ CFLAGS="%{optflags} -fno-strict-aliasing" \
 
 %files doc
 %doc doc/*
+
+
+%changelog
+* Mon Jun 25 2012 Alexander Khrukin <akhrukin@mandriva.org> 3.7.13.r1-1
++ Revision: 806804
+- version update 3.7.13-r1
+
+* Wed May 02 2012 Dmitry Mikhirev <dmikhirev@mandriva.org> 3.7.11.r1-1
++ Revision: 795024
+- update to 3.7.11-r1
+
+* Sat Feb 25 2012 Dmitry Mikhirev <dmikhirev@mandriva.org> 3.7.10.r1-1
++ Revision: 780712
+- new version 3.7.10-r1
+
+* Tue Nov 29 2011 Dmitry Mikhirev <dmikhirev@mandriva.org> 3.7.9.r1-1
++ Revision: 735354
+- imported package python-apsw
+
