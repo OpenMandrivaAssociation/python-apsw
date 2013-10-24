@@ -9,10 +9,10 @@
 %endif
 
 Name:           python-apsw
-Version:        %{sqlite_version}.r%{uprel}
+Version:        3.7.17.r1
 Release:        1
 Summary:        Another Python SQLite Wrapper
-Source0:        http://apsw.googlecode.com/files/apsw-3.7.13-r1.zip
+Source0:        http://apsw.googlecode.com/files/apsw-3.7.17-r1.zip
 URL:            http://code.google.com/p/apsw/
 Group:          Development/Python
 License:        zlib/libpng License
@@ -52,7 +52,7 @@ CFLAGS="%{optflags} -fno-strict-aliasing" \
 %__rm doc/.buildinfo
 
 %files
-%{python_sitearch}/*
+%{py_platsitedir}/*
 
 %files doc
 %doc doc/*
@@ -74,4 +74,5 @@ CFLAGS="%{optflags} -fno-strict-aliasing" \
 * Tue Nov 29 2011 Dmitry Mikhirev <dmikhirev@mandriva.org> 3.7.9.r1-1
 + Revision: 735354
 - imported package python-apsw
+
 
