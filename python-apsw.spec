@@ -6,7 +6,7 @@
 
 Name:           python-apsw
 Version:        3.7.17.r1
-Release:        1
+Release:        2
 Summary:        Another Python SQLite Wrapper
 Source0:        http://apsw.googlecode.com/files/apsw-3.7.17-r1.zip
 URL:            http://code.google.com/p/apsw/
