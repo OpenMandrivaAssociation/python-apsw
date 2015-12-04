@@ -1,19 +1,20 @@
-%define sqlite_version 3.7.17
+%define sqlite_version 3.8.11.1
 %define uprel 1
 %define pkg_version %{sqlite_version}-r%{uprel}
 
 %define __noautoprov 'apsw.so'
 
 Name:           python-apsw
-Version:        3.7.17.r1
-Release:        2
+Version:        %{sqlite_version}.r%{uprel}
+Release:        1
 Summary:        Another Python SQLite Wrapper
-Source0:        http://apsw.googlecode.com/files/apsw-3.7.17-r1.zip
+Source0:        http://apsw.googlecode.com/files/apsw-%pkg_version.tar.gz
 URL:            http://code.google.com/p/apsw/
 Group:          Development/Python
 License:        zlib/libpng License
 BuildRequires:  sqlite3-devel >= %{sqlite_version}
 BuildRequires:  python-devel
+BuildRequires:	python2-devel
 
 %description
 APSW is a Python wrapper for the SQLite embedded relational database
@@ -21,34 +22,43 @@ engine. In contrast to other wrappers such as pysqlite it focuses on
 being a minimal layer over SQLite attempting just to translate the
 complete SQLite API into Python.
 
-%package doc
-Summary:        Another Python SQLite Wrapper - Documentation
-Group:          Development/Python
-License:        zlib/libpng License
-BuildArch:      noarch
+%package -n python2-apsw
+Summary:	Another Python SQLite wrapper
+Group:	Development/Python
 
-%description doc
+%description -n python2-apsw
 APSW is a Python wrapper for the SQLite embedded relational database
 engine. In contrast to other wrappers such as pysqlite it focuses on
 being a minimal layer over SQLite attempting just to translate the
-complete SQLite API into Python.
+complete SQLite API into Pytho
 
 %prep
 %setup -q -n "apsw-%{pkg_version}"
+cp -a . %py2dir
 
 %build
+pushd %py2dir
+CFLAGS="%{optflags} -fno-strict-aliasing" \
+%__python2 ./setup.py build
+popd
+
 CFLAGS="%{optflags} -fno-strict-aliasing" \
 %__python ./setup.py build
 
 %install
+pushd %py2dir
+%__python2 ./setup.py install \
+    --prefix="%{_prefix}" \
+    --root="%{buildroot}"
+popd
+
 %__python ./setup.py install \
     --prefix="%{_prefix}" \
     --root="%{buildroot}"
 
-%__rm doc/.buildinfo
-
 %files
 %{py_platsitedir}/*
 
-%files doc
-%doc doc/*
+%files -n python2-apsw
+%{py2_platsitedir}/*
+
