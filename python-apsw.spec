@@ -13,8 +13,8 @@ URL:            http://code.google.com/p/apsw/
 Group:          Development/Python
 License:        zlib/libpng License
 BuildRequires:  sqlite3-devel >= %{sqlite_version}
-BuildRequires:  python-devel
-BuildRequires:	python2-devel
+BuildRequires:  pkgconfig(python3)
+BuildRequires:	pkgconfig(python2)
 
 %description
 APSW is a Python wrapper for the SQLite embedded relational database
