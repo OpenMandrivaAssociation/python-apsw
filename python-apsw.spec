@@ -1,4 +1,4 @@
-%define sqlite_version 3.27.2
+%define sqlite_version 3.30.1
 %define uprel 1
 %define pkg_version %{sqlite_version}-r%{uprel}
 
