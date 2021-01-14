@@ -1,4 +1,4 @@
-%define sqlite_version 3.30.1
+%define sqlite_version 3.34.0
 %define uprel 1
 %define pkg_version %{sqlite_version}-r%{uprel}
 
@@ -61,4 +61,3 @@ popd
 
 %files -n python2-apsw
 %{py2_platsitedir}/*
-
