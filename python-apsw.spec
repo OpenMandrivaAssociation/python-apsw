@@ -26,6 +26,7 @@ being a minimal layer over SQLite attempting just to translate the
 complete SQLite API into Python.
 
 %files
+%{py_platsitedir}/%{module}.pyi
 %{py_platsitedir}/%{module}*.so
 %{py_platsitedir}/%{module}-*-py%{python_version}.egg-info
 
@@ -41,5 +42,5 @@ complete SQLite API into Python.
 %py_install
 
 # fix path
-mv %{buildroot}%{_prefix}/apsw.pyi %{buildroot}%{python3_sitearch}
+mv %{buildroot}%{_prefix}/%{module}.pyi %{buildroot}%{python3_sitearch}
 
