@@ -9,12 +9,13 @@ Release:	1
 Summary:	Another Python SQLite Wrapper
 Source0:	https://github.com/rogerbinns/apsw/archive/%{pkg_version}/apsw-%{pkg_version}.tar.gz
 # (upstream)
-# https://github.com/rogerbinns/apsw/issues/326
+# https://github.com/rogerbinns/apsw/commit/bea8b11f3057600082b89c17ada8ccee316cdd36
 Patch0:		port-to-python3.11.patch
 URL:		https://rogerbinns.github.io/python-%{module}/
 Group:		Development/Python
 License:	zlib/libpng License
-BuildRequires:	pkgconfig(sqlite3) >= %{sqlite_version}
+BuildRequires:	pkgconfig(sqlite3) 
+#>= %{sqlite_version}
 BuildRequires:	pkgconfig(python3)
 #Obsoletes:	python2-python-%{module} < 3.36.0
 
