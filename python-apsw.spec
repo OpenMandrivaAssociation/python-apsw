@@ -27,7 +27,7 @@ complete SQLite API into Python.
 
 %files
 %{py_platsitedir}/%{module}*.so
-%{py_platsitedir}/%{module}-%{version}-py%{python_version}.egg-info/
+%{py_platsitedir}/%{module}-*-py%{python_version}.egg-info/
 
 #----------------------------------------------------------------------------
 
