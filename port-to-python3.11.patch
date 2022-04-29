@@ -49,3 +49,229 @@ index a0f38273..6d213729 100644
    return res;
  }
 -
+From bea8b11f3057600082b89c17ada8ccee316cdd36 Mon Sep 17 00:00:00 2001
+From: Roger Binns <rogerb@rogerbinns.com>
+Date: Thu, 7 Apr 2022 14:25:14 -0700
+Subject: [PATCH] Redo AddTraceBackHere
+
+* No pyrex/Greg Ewing code remains
+* Python 3.11 compat (fixes #326)
+* Exception in progress has to be cleared during execution
+---
+ LICENSE         |  1 -
+ doc/changes.rst |  4 +++
+ src/traceback.c | 83 +++++++++++++++----------------------------------
+ tests.py        | 21 +++++++++++--
+ 4 files changed, 47 insertions(+), 62 deletions(-)
+
+diff --git a/LICENSE b/LICENSE
+index 67da7e64..02a063b4 100644
+--- a/LICENSE
++++ b/LICENSE
+@@ -1,5 +1,4 @@
+ Copyright (c) 2004-2022 Roger Binns <rogerb@rogerbinns.com>
+-See src/traceback.c for code by Greg Ewing.
+ 
+ All code and documentation is provided under this license:
+ 
+diff --git a/doc/changes.rst b/doc/changes.rst
+index 88ee922d..4e592928 100644
+--- a/doc/changes.rst
++++ b/doc/changes.rst
+@@ -2,6 +2,10 @@ Change History
+ **************
+ .. currentmodule:: apsw
+ 
++next
++====
++
++Python 3.11 (:issue:`326`) now works.
+ 3.38.1-r1
+ =========
+ 
+diff --git a/src/traceback.c b/src/traceback.c
+index 78dcbebc..a1956022 100644
+--- a/src/traceback.c
++++ b/src/traceback.c
+@@ -1,106 +1,73 @@
+-/* Augment a traceback with dummy stack frames from C so you can tell
+-   why the code was called. */
+ 
+-/*
+-  This code was originally from the Pyrex project:
+-  Copyright (C) 2004-2006 Greg Ewing <greg.ewing@canterbury.ac.nz>
++/* These are Python header files */
+ 
+-  It has been lightly modified to be a part of APSW with permission from Greg
+-  and to be under the same license (and option for any OSI approved license) as
+-  the rest of APSW.
+-
+-  See the accompanying LICENSE file.
+-
+-  */
+-
+-/* These are python header files */
+-#include "compile.h"
+ #include "frameobject.h"
+-#include "traceback.h"
+ 
+ /* Add a dummy frame to the traceback so the developer has a better idea of what C code was doing
+ 
+    @param filename: Use __FILE__ for this - it will be the filename reported in the frame
+    @param lineno: Use __LINE__ for this - it will be the line number reported in the frame
+    @param functionname: Name of the function reported
+-   @param localsformat: Format string for Py_BuildValue( that must specify a dictionary or NULL to make
++   @param localsformat: Format string for Py_BuildValue() that must specify a dictionary or NULL to make
+                         an empty dictionary.  An example is "{s:i, s: s}" with the varargs then conforming
+-			to this format (the corresponding params could be "seven", 7, "foo", "bar"
++      to this format (the corresponding params could be "seven", 7, "foo", "bar"
+ 
+ */
+ static void AddTraceBackHere(const char *filename, int lineno, const char *functionname, const char *localsformat, ...)
+ {
+-  PyObject *srcfile = 0, *funcname = 0, *empty_dict = 0, *empty_tuple = 0, *empty_string = 0, *localargs = 0, *empty_code = 0;
++  /* See the implementation of _PyTraceback_Add for a template of what
++     this code should do. That method does everything we need, except
++     attaching variables */
++
++  PyObject *localargs = 0, *one = 0, *two = 0, *three = 0, *empty_dict;
+   PyCodeObject *code = 0;
+   PyFrameObject *frame = 0;
+   va_list localargsva;
+ 
+   va_start(localargsva, localsformat);
+ 
+-  assert(PyErr_Occurred());
+-
+-  srcfile = PyUnicode_FromString(filename);
+-  funcname = PyUnicode_FromString(functionname);
+   empty_dict = PyDict_New();
+-  empty_tuple = PyTuple_New(0);
+-  empty_string = PyUnicode_FromString("");
+-  empty_code = PyBytes_FromStringAndSize(NULL, 0);
++  /* we have to save and restore the error indicators otherwise intermediate code has no effect! */
++  assert(PyErr_Occurred());
++  PyErr_Fetch(&one, &two, &three);
+ 
+-  localargs = localsformat ? (Py_VaBuildValue((char *)localsformat, localargsva)) : PyDict_New();
++  localargs = localsformat ? (Py_VaBuildValue((char *)localsformat, localargsva)) : NULL;
++  /* this will only happen due to error in Py_BuildValue, usually
++     because NULL was passed to O (PyObject*) format */
++  assert(!PyErr_Occurred());
+   if (localsformat)
+     assert(localsformat[0] == '{');
+   if (localargs)
+     assert(PyDict_Check(localargs));
+ 
+-  /* did any fail? */
+-  if (!srcfile || !funcname || !empty_dict || !empty_tuple || !empty_string)
+-    goto end;
+-
+   /* make the dummy code object */
+-  code = PyCode_New(
+-      0, /*int argcount,*/
+-      0, /*int kwonlyargcount*/
+-      0,           /*int nlocals,*/
+-      0,           /*int stacksize,*/
+-      0,           /*int flags,*/
+-      empty_code,  /*PyObject *code,*/
+-      empty_tuple, /*PyObject *consts,*/
+-      empty_tuple, /*PyObject *names,*/
+-      empty_tuple, /*PyObject *varnames,*/
+-      empty_tuple, /*PyObject *freevars,*/
+-      empty_tuple, /*PyObject *cellvars,*/
+-      srcfile,     /*PyObject *filename,*/
+-      funcname,    /*PyObject *name,*/
+-      lineno,      /*int firstlineno,*/
+-      empty_code   /*PyObject *lnotab*/
+-  );
++  code = PyCode_NewEmpty(filename, functionname, lineno);
+   if (!code)
+     goto end;
+ 
+   /* make the dummy frame */
+   frame = PyFrame_New(
+-      PyThreadState_Get(), /*PyThreadState *tstate,*/
+-      code,                /*PyCodeObject *code,*/
+-      empty_dict,          /*PyObject *globals,*/
+-      localargs            /*PyObject *locals*/
++      PyThreadState_Get(), /* PyThreadState *tstate */
++      code,                /* PyCodeObject *code */
++      empty_dict,          /* PyObject *globals */
++      localargs            /* PyObject *locals */
+   );
+   if (!frame)
+     goto end;
+ 
+-  /* add dummy frame to traceback */
++#if PY_VERSION_HEX < 0x030b0000
+   frame->f_lineno = lineno;
++#endif
++
++  /* add dummy frame to traceback after restoring exception info */
++  PyErr_Restore(one, two, three);
+   PyTraceBack_Here(frame);
+ 
+   /* this epilogue deals with success or failure cases */
+ end:
+   va_end(localargsva);
+   Py_XDECREF(localargs);
+-  Py_XDECREF(srcfile);
+-  Py_XDECREF(funcname);
+   Py_XDECREF(empty_dict);
+-  Py_XDECREF(empty_tuple);
+-  Py_XDECREF(empty_string);
+-  Py_XDECREF(empty_code);
+   Py_XDECREF(code);
+   Py_XDECREF(frame);
+ }
+diff --git a/tests.py b/tests.py
+index d3fdb45c..7af61521 100644
+--- a/tests.py
++++ b/tests.py
+@@ -6,6 +6,7 @@
+ import sys
+ import os
+ import warnings
++import platform
+ 
+ 
+ def print_version_info():
+@@ -2202,20 +2203,34 @@ def testTracebacks(self):
+         return
+ 
+         def badfunc(*args):
++            zebra = 3
+             1 / 0
+ 
+         self.db.createscalarfunction("badfunc", badfunc)
+         try:
+             c = self.db.cursor()
+-            c.execute("select badfunc()")
++            c.execute("select badfunc(1,'two',3.14)")
+             self.fail("Exception should have occurred")
+         except ZeroDivisionError:
+             tb = sys.exc_info()[2]
+-            traceback.print_tb(tb)
+-            del tb
++            frames = []
++            while tb:
++                frames.append(tb.tb_frame)
++                tb=tb.tb_next
+         except:
+             self.fail("Wrong exception type")
+ 
++        frames.reverse()
++        frame = frames[1]  # frame[0] is badfunc above
++        self.assertTrue(frame.f_code.co_filename.endswith(".c"))
++        self.assertTrue(frame.f_lineno > 100)
++        self.assertTrue(frame.f_code.co_name.endswith("-badfunc"))
++        # check local variables
++        if platform.python_implementation()!="PyPy":
++            l = frame.f_locals
++            self.assertIn("NumberOfArguments", l)
++            self.assertEqual(l["NumberOfArguments"], 3)
++
+     def testLoadExtension(self):
+         "Check loading of extensions"
+         # unicode issues
