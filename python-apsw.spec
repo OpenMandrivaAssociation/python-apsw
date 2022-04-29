@@ -35,10 +35,11 @@ complete SQLite API into Python.
 %autosetup -n "%{module}-%{pkg_version}" -p1
 
 %build
-#CFLAGS="%{optflags} -fno-strict-aliasing" \
-#python setup.py build --enable-all-extensions --enable=load_extension
 %py_build -- --enable-all-extensions --enable=load_extension
 
 %install
 %py_install
+
+# fix path
+mv %{buildroot}%{_prefix}/apsw.pyi %{buildroot}%{python3_sitearch}
 
