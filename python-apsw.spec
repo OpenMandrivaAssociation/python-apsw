@@ -4,8 +4,8 @@
 %define pkg_version %{sqlite_version}-r%{uprel}
 
 Name:		python-%{module}
-Version:	3.40.1.0
-Release:	2
+Version:	3.42.0.0
+Release:	1
 Summary:	Another Python SQLite Wrapper
 Source0:	https://github.com/rogerbinns/apsw/archive/%{pkg_version}/apsw-%{pkg_version}.tar.gz
 # (upstream)
