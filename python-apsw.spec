@@ -1,23 +1,16 @@
 %define module	apsw
-%define sqlite_version 3.38.1
-%define uprel 1
-%define pkg_version %{sqlite_version}-r%{uprel}
 
 Name:		python-%{module}
 Version:	3.43.0.0
-Release:	1
+Release:	2
 Summary:	Another Python SQLite Wrapper
-Source0:	https://github.com/rogerbinns/apsw/archive/%{pkg_version}/apsw-%{pkg_version}.tar.gz
-# (upstream)
-# https://github.com/rogerbinns/apsw/commit/bea8b11f3057600082b89c17ada8ccee316cdd36
-Patch0:		port-to-python3.11.patch
+Source0:	https://github.com/rogerbinns/apsw/archive/refs/tags/%{version}.tar.gz
+Patch0:		apsw-3.43.0.0-fix-sqlite-with-omitted-misfeatures.patch
 URL:		https://rogerbinns.github.io/python-%{module}/
 Group:		Development/Python
 License:	zlib/libpng License
 BuildRequires:	pkgconfig(sqlite3) 
-#>= %{sqlite_version}
 BuildRequires:	pkgconfig(python3)
-#Obsoletes:	python2-python-%{module} < 3.36.0
 
 %description
 APSW is a Python wrapper for the SQLite embedded relational database
@@ -26,21 +19,16 @@ being a minimal layer over SQLite attempting just to translate the
 complete SQLite API into Python.
 
 %files
-%{py_platsitedir}/%{module}.pyi
-%{py_platsitedir}/%{module}*.so
-%{py_platsitedir}/%{module}-*-py%{python_version}.egg-info
+%{py_platsitedir}/%{module}
+%{py_platsitedir}/%{module}-*.*-info
 
 #----------------------------------------------------------------------------
 
 %prep
-%autosetup -n "%{module}-%{pkg_version}" -p1
+%autosetup -n "%{module}-%{version}" -p1
 
 %build
-%py_build -- --enable-all-extensions --enable=load_extension
+%py_build -- --enable-all-extensions --use-system-sqlite-config --enable=load_extension
 
 %install
 %py_install
-
-# fix path
-mv %{buildroot}%{_prefix}/%{module}.pyi %{buildroot}%{python3_sitearch}
-

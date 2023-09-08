@@ -1,0 +1,21 @@
+diff -up apsw-3.43.0.0/src/apsw.c.omv~ apsw-3.43.0.0/src/apsw.c
+--- apsw-3.43.0.0/src/apsw.c.omv~	2023-09-08 14:45:49.310310128 +0200
++++ apsw-3.43.0.0/src/apsw.c	2023-09-08 14:46:16.005794338 +0200
+@@ -268,6 +268,7 @@ getapswversion(void)
+ static PyObject *
+ enablesharedcache(PyObject *Py_UNUSED(self), PyObject *args, PyObject *kwds)
+ {
++#ifdef INCLUDE_DEPRECATED
+   int enable = 0, res;
+   {
+     static char *kwlist[] = {"enable", NULL};
+@@ -283,6 +284,9 @@ enablesharedcache(PyObject *Py_UNUSED(se
+     return NULL;
+ 
+   Py_RETURN_NONE;
++#else
++  return NULL;
++#endif
+ }
+ 
+ /** .. method:: connections() -> list[Connection]
