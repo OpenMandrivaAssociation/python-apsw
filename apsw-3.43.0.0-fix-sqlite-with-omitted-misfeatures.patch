@@ -1,21 +1,19 @@
-diff -up apsw-3.43.0.0/src/apsw.c.omv~ apsw-3.43.0.0/src/apsw.c
---- apsw-3.43.0.0/src/apsw.c.omv~	2023-09-08 14:45:49.310310128 +0200
-+++ apsw-3.43.0.0/src/apsw.c	2023-09-08 14:46:16.005794338 +0200
-@@ -268,6 +268,7 @@ getapswversion(void)
+diff -up apsw-3.46.0.1/src/apsw.c.1~ apsw-3.46.0.1/src/apsw.c
+--- apsw-3.46.0.1/src/apsw.c.1~	2024-06-16 21:44:24.000000000 +0200
++++ apsw-3.46.0.1/src/apsw.c	2024-07-07 18:47:30.031848579 +0200
+@@ -279,6 +279,7 @@ get_apsw_version(void)
  static PyObject *
- enablesharedcache(PyObject *Py_UNUSED(self), PyObject *args, PyObject *kwds)
+ enable_shared_cache(PyObject *Py_UNUSED(self), PyObject *const *fast_args, Py_ssize_t fast_nargs, PyObject *fast_kwnames)
  {
 +#ifdef INCLUDE_DEPRECATED
    int enable = 0, res;
    {
-     static char *kwlist[] = {"enable", NULL};
-@@ -283,6 +284,9 @@ enablesharedcache(PyObject *Py_UNUSED(se
+     Apsw_enable_shared_cache_CHECK;
+@@ -291,6 +292,7 @@ enable_shared_cache(PyObject *Py_UNUSED(
+ 
+   if (res != SQLITE_OK)
      return NULL;
++#endif
  
    Py_RETURN_NONE;
-+#else
-+  return NULL;
-+#endif
  }
- 
- /** .. method:: connections() -> list[Connection]
