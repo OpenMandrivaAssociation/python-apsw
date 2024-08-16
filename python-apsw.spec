@@ -1,7 +1,7 @@
 %define module	apsw
 
 Name:		python-%{module}
-Version:	3.46.0.1
+Version:	3.46.1.0
 Release:	1
 Summary:	Another Python SQLite Wrapper
 Source0:	https://github.com/rogerbinns/apsw/archive/refs/tags/%{version}.tar.gz
