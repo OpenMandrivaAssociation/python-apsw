@@ -2,7 +2,7 @@
 
 Name:		python-%{module}
 Version:	3.46.1.0
-Release:	1
+Release:	2
 Summary:	Another Python SQLite Wrapper
 Source0:	https://github.com/rogerbinns/apsw/archive/refs/tags/%{version}.tar.gz
 Patch0:		apsw-3.43.0.0-fix-sqlite-with-omitted-misfeatures.patch
