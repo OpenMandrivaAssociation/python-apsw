@@ -10,6 +10,7 @@ Source0:	https://files.pythonhosted.org/packages/source/a/apsw/apsw-%{version}.t
 Group:		Development/Python
 License:	zlib/libpng License
 BuildSystem:	python
+BuildRequires:	python%{pyver}dist(setuptools)
 BuildRequires:	pkgconfig(sqlite3) 
 BuildRequires:	pkgconfig(python3)
 
