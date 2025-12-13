@@ -1,14 +1,15 @@
 %define module	apsw
 
 Name:		python-%{module}
-Version:	3.46.1.0
-Release:	2
+Version:	3.51.1.0
+Release:	1
 Summary:	Another Python SQLite Wrapper
-Source0:	https://github.com/rogerbinns/apsw/archive/refs/tags/%{version}.tar.gz
-Patch0:		apsw-3.43.0.0-fix-sqlite-with-omitted-misfeatures.patch
-URL:		https://rogerbinns.github.io/python-%{module}/
+URL:		https://pypi.org/project/apsw
+Source0:	https://files.pythonhosted.org/packages/source/a/apsw/apsw-%{version}.tar.gz
+#Patch0:		apsw-3.43.0.0-fix-sqlite-with-omitted-misfeatures.patch
 Group:		Development/Python
 License:	zlib/libpng License
+BuildSystem:	python
 BuildRequires:	pkgconfig(sqlite3) 
 BuildRequires:	pkgconfig(python3)
 
@@ -19,16 +20,14 @@ being a minimal layer over SQLite attempting just to translate the
 complete SQLite API into Python.
 
 %files
+%{_bindir}/apsw
 %{py_platsitedir}/%{module}
 %{py_platsitedir}/%{module}-*.*-info
 
 #----------------------------------------------------------------------------
 
-%prep
-%autosetup -n "%{module}-%{version}" -p1
-
-%build
-%py_build -- --enable-all-extensions --use-system-sqlite-config --enable=load_extension
-
-%install
-%py_install
+%prep -a
+# Don't download a custom sqlite
+sed -i -e 's,^fetch = True,fetch = False,' setup.apsw
+# And allow building the ICU extension
+sed -i -e 's,^omit =,# omit =,' setup.apsw
