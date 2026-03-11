@@ -3,7 +3,7 @@
 %global optflags %{optflags} -DSQLITE_OMIT_SHARED_CACHE
 
 Name:		python-%{module}
-Version:	3.51.2.0
+Version:	3.52.0.0
 Release:	1
 Summary:	Another Python SQLite Wrapper
 URL:		https://pypi.org/project/apsw
@@ -25,6 +25,8 @@ being a minimal layer over SQLite attempting just to translate the
 complete SQLite API into Python.
 
 %prep -a
+# Remove bundled egg-info
+rm -rf %{module}.egg-info
 # Don't download a custom sqlite
 sed -i -e 's,^fetch = True,fetch = False,' setup.apsw
 # And allow building the ICU extension
