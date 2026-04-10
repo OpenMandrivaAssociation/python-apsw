@@ -1,9 +1,9 @@
-%define module	apsw
+%define module apsw
 # Keep OMIT_* flags in sync with sqlite
 %global optflags %{optflags} -DSQLITE_OMIT_SHARED_CACHE
 
-Name:		python-%{module}
-Version:	3.52.0.0
+Name:		python-apsw
+Version:	3.53.0.0
 Release:	1
 Summary:	Another Python SQLite Wrapper
 URL:		https://pypi.org/project/apsw
@@ -15,7 +15,7 @@ BuildSystem:	python
 BuildRequires:	python%{pyver}dist(pip)
 BuildRequires:	python%{pyver}dist(setuptools)
 BuildRequires:	python%{pyver}dist(wheel)
-BuildRequires:	pkgconfig(sqlite3) 
+BuildRequires:	pkgconfig(sqlite3)
 BuildRequires:	pkgconfig(python3)
 
 %description
