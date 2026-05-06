@@ -3,7 +3,7 @@
 %global optflags %{optflags} -DSQLITE_OMIT_SHARED_CACHE
 
 Name:		python-apsw
-Version:	3.53.0.0
+Version:	3.53.1.0
 Release:	1
 Summary:	Another Python SQLite Wrapper
 URL:		https://pypi.org/project/apsw
