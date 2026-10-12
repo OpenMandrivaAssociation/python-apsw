@@ -4,7 +4,7 @@
 
 Name:		python-apsw
 Version:	3.53.4.0
-Release:	1
+Release:	2
 Summary:	Another Python SQLite Wrapper
 URL:		https://pypi.org/project/apsw
 Source0:	https://files.pythonhosted.org/packages/source/a/%{module}/%{module}-%{version}.tar.gz#/%{name}-%{version}.tar.gz
